@@ -1,4 +1,5 @@
-const {User} = require("../models/User");
+const { User } = require("../models/User");
+
 async function makeUserAdmin(req, res) {
     const username = req.query.username;
     const user = await User.findOneAndUpdate({ username }, { admin: true, adminedAt: new Date() });
@@ -11,6 +12,7 @@ async function makeUserAdmin(req, res) {
         return;
     }
 }
+
 async function revokeAdmin(req, res) {
     const username = req.query.username;
     const user = await User.findOneAndUpdate({ username }, { admin: false, adminedAt: null });

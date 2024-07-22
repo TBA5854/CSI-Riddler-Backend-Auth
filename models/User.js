@@ -44,10 +44,13 @@ const userSchema = new mongoose.Schema({
         default: null
     },
 });
+
 userSchema.pre('save', async function (next) {
     const salt = await bcrypt.genSalt();
     this.password = await bcrypt.hash(this.password.toString(), salt);
     next();
 });
+
 const User = mongoose.model('user', userSchema);
+
 module.exports.User = User;

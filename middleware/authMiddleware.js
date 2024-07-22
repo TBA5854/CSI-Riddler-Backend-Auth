@@ -22,6 +22,7 @@ function authverify(req, res, next) {
     });
     return;
 }
+
 async function isAdmin(req, res, next) {
     const incomimg_token = req.cookies;
     const decodedToken = jsonwebtoken.verify(incomimg_token['X-Auth-Token'], process.env.SECRET_KEY);
