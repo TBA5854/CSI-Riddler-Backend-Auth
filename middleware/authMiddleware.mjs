@@ -1,19 +1,23 @@
-const jsonwebtoken = require("jsonwebtoken");
-const { User } = require("../models/User");
-
-function authverify(req, res, next) {
+// const jwt = require("jsonwebtoken");
+// const User = require("../models/User");
+import jwt from "jsonwebtoken";
+import User from "../models/User.mjs";
+export function authverify(req, res, next) {
     const incomimg_token = req.cookies;
     if (!incomimg_token) {
         res.send("Login First");
+        // res.redirect("/signup");
         return;
     }
     if (!incomimg_token['X-Auth-Token']) {
         res.send("Login First");
+        // res.redirect("/login");
         return;
     }
-    jsonwebtoken.verify(incomimg_token['X-Auth-Token'], process.env.SECRET_KEY, (err, _decodedtoken) => {
+    jwt.verify(incomimg_token['X-Auth-Token'], process.env.SECRET_KEY, (err, _decodedtoken) => {
         if (err) {
             res.send("Login First");
+            // res.redirect("/login");
             return;
         }
         else {
@@ -23,9 +27,9 @@ function authverify(req, res, next) {
     return;
 }
 
-async function isAdmin(req, res, next) {
+export async function isAdmin(req, res, next) {
     const incomimg_token = req.cookies;
-    const decodedToken = jsonwebtoken.verify(incomimg_token['X-Auth-Token'], process.env.SECRET_KEY);
+    const decodedToken = jwt.verify(incomimg_token['X-Auth-Token'], process.env.SECRET_KEY);
     console.log(decodedToken);
     const user = await User.findById(decodedToken.user_id);
     if (user?.admin) {
@@ -36,6 +40,3 @@ async function isAdmin(req, res, next) {
         res.send("Not Authorised");
     }
 }
-
-module.exports.authverify = authverify;
-module.exports.isAdmin = isAdmin;

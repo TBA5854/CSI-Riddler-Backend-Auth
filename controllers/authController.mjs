@@ -1,8 +1,11 @@
-const { User } = require("../models/User");
-const jsonwebtoken = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
+import User from "../models/User.mjs";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+// const User = require("../models/User");
+// const jwt = require("jsonwebtoken");
+// const bcrypt = require("bcrypt");
 
-async function login(req, res) {
+export async function login(req, res) {
     const email = req.body.email;
     const password = req.body.password;
     const user = await User.findOne({ email }).exec();
@@ -18,17 +21,15 @@ async function login(req, res) {
     }
     console.log(loggingUser);
     const user_id = user._id;
-    const token = jsonwebtoken.sign({ user_id }, process.env.SECRET_KEY, { expiresIn: '180d' });
+    const token = jwt.sign({ user_id }, process.env.SECRET_KEY, { expiresIn: '180d' });
     res.cookie('X-Auth-Token', token, { maxAge: 86400000 });
     res.send({ token, user_id });
 }
-
-function logout(_req, res) {
+export function logout(_req, res) {
     res.cookie('X-Auth-Token', '', { maxAge: 1 });
     res.send("Logout Successful");
 }
-
-async function signup(req, res) {
+export async function signup(req, res) {
     const username = req.body.username;
     const password = req.body.password;
     const email = req.body.email;
@@ -54,7 +55,7 @@ async function signup(req, res) {
                 adminedAt
             });
             const user_id = usr._id;
-            const token = jsonwebtoken.sign({ user_id }, process.env.SECRET_KEY, { expiresIn: '180d' });
+            const token = jwt.sign({ user_id }, process.env.SECRET_KEY, { expiresIn: '180d' });
             res.cookie('X-Auth-Token', token, { maxAge: 86400000 });
             res.status(201).json({ token, usr });
         }
@@ -63,7 +64,3 @@ async function signup(req, res) {
         }
     }
 }
-
-module.exports.logout = logout;
-module.exports.signup = signup;
-module.exports.login = login;

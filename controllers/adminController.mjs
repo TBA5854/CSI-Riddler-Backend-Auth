@@ -1,6 +1,6 @@
-const { User } = require("../models/User");
-
-async function makeUserAdmin(req, res) {
+import User from "../models/User.mjs";
+// const User = require("../models/User");
+export async function makeUserAdmin(req, res) {
     const username = req.query.username;
     const user = await User.findOneAndUpdate({ username }, { admin: true, adminedAt: new Date() });
     if (!user) {
@@ -12,8 +12,7 @@ async function makeUserAdmin(req, res) {
         return;
     }
 }
-
-async function revokeAdmin(req, res) {
+export async function revokeAdmin(req, res) {
     const username = req.query.username;
     const user = await User.findOneAndUpdate({ username }, { admin: false, adminedAt: null });
     if (!user) {
@@ -25,6 +24,3 @@ async function revokeAdmin(req, res) {
         return;
     }
 }
-
-module.exports.makeUserAdmin = makeUserAdmin;
-module.exports.revokeAdmin = revokeAdmin;
